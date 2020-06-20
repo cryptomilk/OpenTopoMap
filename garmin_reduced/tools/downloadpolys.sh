@@ -4,13 +4,23 @@
 # author: Martin Schuetz, Stefan Erhardt
 # A download script for the polygons of all countries worldwide
 
-DATA_DIR=/home/asn/workspace/osm/poly/
+DATA_DIR=/home/asn/workspace/osm/osm-data/poly/
 
+continents="europe"
 
-dirs="europe"
-
-for d in $dirs
+for continent in $continents
 do
-	echo $d
-	wget -w 0.1 -np -r -l 1 -A poly http://download.geofabrik.de/$d/ -P $DATA_DIR
+    echo "Downloading poly files for $continent ..."
+
+    wget --wait=0.1 \
+        --no-parent \
+        --recursive \
+        --level 1 \
+        --accept poly \
+        http://download.geofabrik.de/$continent/ -P $DATA_DIR
+
+    find $DATA_DIR -type d -delete 2>/dev/null
+    mv $DATA_DIR/download.geofabrik.de/$continent $DATA_DIR
 done
+
+rm -rf download.geofabrik.de
